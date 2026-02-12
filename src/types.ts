@@ -65,6 +65,11 @@ export interface ProfileDetail {
   review_notes: string | null
   invitation_code_used: string | null
   admin_contact: string | null
+  // ===== 新增字段 =====
+  dating_purpose: string | null
+  want_children: string | null
+  wechat_id: string | null
+  referred_by: string | null
 }
 
 /** 公众号文案预览 */

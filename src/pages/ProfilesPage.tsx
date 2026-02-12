@@ -190,6 +190,10 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
                 ['出柜状态', detail.coming_out_status],
                 ['健康状况', detail.health_condition],
                 ['住房', detail.housing_status],
+                ['交友目的', detail.dating_purpose],
+                ['孩子意愿', detail.want_children],
+                ['微信号', detail.wechat_id],
+                ['推荐人', detail.referred_by],
               ] as [string, string | null][])
                 .filter(([, v]) => v)
                 .map(([k, v]) => (
