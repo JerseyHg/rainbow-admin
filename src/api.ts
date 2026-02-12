@@ -5,6 +5,7 @@
 import type {
   ApiResponse,
   LoginResponse,
+  DashboardStats,
   PendingListData,
   ProfileDetail,
   PostPreview,
@@ -99,6 +100,18 @@ class ApiClient {
     return this.request(`/admin/invitation/generate?${params}`, {
       method: 'POST',
     })
+  }
+
+  // ========== 仪表盘 ==========
+
+  async getDashboardStats(): Promise<ApiResponse<DashboardStats>> {
+    return this.request('/admin/dashboard/stats')
+  }
+
+  // ========== 邀请码列表 ==========
+
+  async getInvitationList(page = 1, limit = 50): Promise<ApiResponse> {
+    return this.request(`/admin/invitation/list?page=${page}&limit=${limit}`)
   }
 }
 

@@ -28,8 +28,8 @@ export default function App() {
   // Load basic stats when authenticated
   useEffect(() => {
     if (!token) return
-    api.getPendingProfiles().then(res => {
-      setStats(prev => ({ ...prev, pending: res.data?.total || 0 }))
+    api.getDashboardStats().then(res => {
+      if (res.data) setStats(res.data)
     }).catch(() => {})
   }, [token, page])
 
