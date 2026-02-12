@@ -9,8 +9,14 @@ import { InvitationsPage } from './pages/InvitationsPage'
 import { api } from './api'
 import type { PageKey, DashboardStats, ToastInfo, ToastType } from './types'
 
+// 启动时从 localStorage 恢复 token
+const savedToken = localStorage.getItem('admin_token')
+if (savedToken) {
+  api.setToken(savedToken)
+}
+
 export default function App() {
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<string | null>(savedToken)
   const [page, setPage] = useState<PageKey>('dashboard')
   const [toast, setToast] = useState<ToastInfo | null>(null)
   const [profileFilter, setProfileFilter] = useState<string>('pending')
@@ -30,17 +36,24 @@ export default function App() {
     if (!token) return
     api.getDashboardStats().then(res => {
       if (res.data) setStats(res.data)
-    }).catch(() => {})
+    }).catch((e) => {
+      // token 过期则自动登出
+      if (e.message === 'AUTH_EXPIRED') {
+        handleLogout()
+      }
+    })
   }, [token, page])
 
   const handleLogin = (t: string) => {
     api.setToken(t)
     setToken(t)
+    localStorage.setItem('admin_token', t)
   }
 
   const handleLogout = () => {
     api.setToken(null)
     setToken(null)
+    localStorage.removeItem('admin_token')
     setPage('dashboard')
   }
 
