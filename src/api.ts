@@ -127,6 +127,10 @@ class ApiClient {
   async getNetworkUserDetail(userId: number): Promise<ApiResponse> {
     return this.request(`/admin/network/user/${userId}`)
   }
+
+  async getMapUsers(): Promise<ApiResponse> {
+    return this.request('/admin/map/users')
+  }
 }
 
 // 导出单例

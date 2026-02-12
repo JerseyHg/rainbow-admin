@@ -103,7 +103,7 @@ export interface DashboardStats {
 }
 
 /** 侧边栏导航 key */
-export type PageKey = 'dashboard' | 'profiles' | 'invitations' | 'network'
+export type PageKey = 'dashboard' | 'profiles' | 'invitations' | 'network' | 'map'
 
 /** Toast 类型 */
 export type ToastType = 'success' | 'error' | 'warning'

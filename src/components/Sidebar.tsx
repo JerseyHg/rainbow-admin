@@ -12,6 +12,7 @@ const navItems: { key: PageKey; label: string; emoji: string }[] = [
   { key: 'profiles',    label: '资料审核',    emoji: '👥' },
   { key: 'invitations', label: '邀请码管理',  emoji: '🎫' },
   { key: 'network',     label: '邀请关系网',  emoji: '🔗' },
+  { key: 'map',         label: '用户地图',    emoji: '🗺️' },
 ]
 
 export function Sidebar({ active, onNav, onLogout }: SidebarProps) {
