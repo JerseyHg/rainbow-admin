@@ -5,9 +5,10 @@ import type { DashboardStats, PageKey } from '../types'
 interface DashboardPageProps {
   stats: DashboardStats
   onNav: (key: PageKey) => void
+  onFilterProfiles: (status: string) => void
 }
 
-export function DashboardPage({ stats, onNav }: DashboardPageProps) {
+export function DashboardPage({ stats, onNav, onFilterProfiles }: DashboardPageProps) {
   return (
     <div style={{ animation: 'fadeIn 0.4s ease' }}>
       <div style={{ marginBottom: 32 }}>
@@ -15,23 +16,32 @@ export function DashboardPage({ stats, onNav }: DashboardPageProps) {
         <p style={{ fontSize: 14, color: COLORS.textSec }}>欢迎回来，管理员 ✨</p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - 点击跳转到对应状态的列表 */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
         gap: 16, marginBottom: 32,
       }}>
-        <StatCard label="待审核" value={stats.pending} icon="⏳" color={COLORS.warning} sub="需要处理" />
-        <StatCard label="已通过" value={stats.approved} icon="✅" color={COLORS.success} sub="审核通过" />
-        <StatCard label="已发布" value={stats.published} icon="📄" color={COLORS.info} sub="公众号发布" />
-        <StatCard label="邀请码" value={stats.totalCodes} icon="🎫" color={COLORS.accent} sub={`已使用 ${stats.usedCodes}`} />
+        <div style={{ cursor: 'pointer' }} onClick={() => onFilterProfiles('pending')}>
+          <StatCard label="待审核" value={stats.pending} icon="⏳" color={COLORS.warning} sub="点击查看" />
+        </div>
+        <div style={{ cursor: 'pointer' }} onClick={() => onFilterProfiles('approved')}>
+          <StatCard label="已通过" value={stats.approved} icon="✅" color={COLORS.success} sub="点击查看" />
+        </div>
+        <div style={{ cursor: 'pointer' }} onClick={() => onFilterProfiles('published')}>
+          <StatCard label="已发布" value={stats.published} icon="📄" color={COLORS.info} sub="点击查看" />
+        </div>
+        <div style={{ cursor: 'pointer' }} onClick={() => onNav('invitations')}>
+          <StatCard label="邀请码" value={stats.totalCodes} icon="🎫" color={COLORS.accent} sub={`已使用 ${stats.usedCodes}`} />
+        </div>
       </div>
 
       {/* Quick Actions */}
       <Card style={{ marginBottom: 24 }}>
         <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16, color: COLORS.textSec }}>快速操作</h3>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Button variant="soft" onClick={() => onNav('profiles')}>👥 审核资料</Button>
+          <Button variant="soft" onClick={() => onFilterProfiles('pending')}>👥 审核资料</Button>
+          <Button variant="ghost" onClick={() => onFilterProfiles('all')}>📋 查看全部</Button>
           <Button variant="ghost" onClick={() => onNav('invitations')}>➕ 生成邀请码</Button>
         </div>
       </Card>

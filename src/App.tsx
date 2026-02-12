@@ -13,6 +13,7 @@ export default function App() {
   const [token, setToken] = useState<string | null>(null)
   const [page, setPage] = useState<PageKey>('dashboard')
   const [toast, setToast] = useState<ToastInfo | null>(null)
+  const [profileFilter, setProfileFilter] = useState<string>('pending')
   const [stats, setStats] = useState<DashboardStats>({
     pending: 0,
     approved: 0,
@@ -25,7 +26,6 @@ export default function App() {
     setToast({ message, type, key: Date.now() })
   }, [])
 
-  // Load basic stats when authenticated
   useEffect(() => {
     if (!token) return
     api.getDashboardStats().then(res => {
@@ -44,7 +44,11 @@ export default function App() {
     setPage('dashboard')
   }
 
-  // Not logged in -> show login page
+  const navToProfiles = (status: string) => {
+    setProfileFilter(status)
+    setPage('profiles')
+  }
+
   if (!token) {
     return (
       <>
@@ -54,7 +58,6 @@ export default function App() {
     )
   }
 
-  // Logged in -> show admin panel
   return (
     <>
       <GlobalStyles />
@@ -62,10 +65,10 @@ export default function App() {
 
       <div style={{ marginLeft: 240, minHeight: '100vh', padding: '32px 40px' }}>
         {page === 'dashboard' && (
-          <DashboardPage stats={stats} onNav={setPage} />
+          <DashboardPage stats={stats} onNav={setPage} onFilterProfiles={navToProfiles} />
         )}
         {page === 'profiles' && (
-          <ProfilesPage showToast={showToast} />
+          <ProfilesPage showToast={showToast} initialFilter={profileFilter} />
         )}
         {page === 'invitations' && (
           <InvitationsPage showToast={showToast} />

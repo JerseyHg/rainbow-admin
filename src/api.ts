@@ -113,6 +113,10 @@ class ApiClient {
   async getInvitationList(page = 1, limit = 50): Promise<ApiResponse> {
     return this.request(`/admin/invitation/list?page=${page}&limit=${limit}`)
   }
+
+  async getProfilesByStatus(status: string, page = 1, limit = 20): Promise<ApiResponse<PendingListData>> {
+    return this.request(`/admin/profiles/list?status=${status}&page=${page}&limit=${limit}`)
+  }
 }
 
 // 导出单例

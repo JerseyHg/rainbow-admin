@@ -4,11 +4,21 @@ import { Card, Badge, Button, Modal, Empty } from '../components/UI'
 import { api } from '../api'
 import type { ProfileSummary, ProfileDetail, PostPreview, ToastType } from '../types'
 
+const FILTER_TABS: { key: string; label: string }[] = [
+  { key: 'pending', label: '⏳ 待审核' },
+  { key: 'approved', label: '✅ 已通过' },
+  { key: 'published', label: '📄 已发布' },
+  { key: 'rejected', label: '❌ 已拒绝' },
+  { key: 'all', label: '📋 全部' },
+]
+
 interface ProfilesPageProps {
   showToast: (message: string, type?: ToastType) => void
+  initialFilter?: string
 }
 
-export function ProfilesPage({ showToast }: ProfilesPageProps) {
+export function ProfilesPage({ showToast, initialFilter = 'pending' }: ProfilesPageProps) {
+  const [filter, setFilter] = useState(initialFilter)
   const [profiles, setProfiles] = useState<ProfileSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -19,16 +29,21 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
   const [rejectReason, setRejectReason] = useState('')
   const [actionLoading, setActionLoading] = useState('')
 
+  // 当 initialFilter 从外部变化时同步
+  useEffect(() => {
+    setFilter(initialFilter)
+  }, [initialFilter])
+
   const loadProfiles = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await api.getPendingProfiles()
+      const res = await api.getProfilesByStatus(filter)
       setProfiles(res.data?.list || [])
     } catch (e: any) {
       showToast(e.message, 'error')
     }
     setLoading(false)
-  }, [showToast])
+  }, [showToast, filter])
 
   useEffect(() => { loadProfiles() }, [loadProfiles])
 
@@ -89,12 +104,37 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
   return (
     <div style={{ animation: 'fadeIn 0.4s ease' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>资料审核</h2>
-          <p style={{ fontSize: 14, color: COLORS.textSec }}>待处理 {profiles.length} 条</p>
+          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>资料管理</h2>
+          <p style={{ fontSize: 14, color: COLORS.textSec }}>共 {profiles.length} 条记录</p>
         </div>
         <Button variant="ghost" onClick={loadProfiles} size="sm">🔄 刷新</Button>
+      </div>
+
+      {/* Filter Tabs */}
+      <div style={{
+        display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap',
+      }}>
+        {FILTER_TABS.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            style={{
+              padding: '8px 18px',
+              borderRadius: 20,
+              border: 'none',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              background: filter === tab.key ? COLORS.accent : COLORS.bg,
+              color: filter === tab.key ? '#fff' : COLORS.textSec,
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* List */}
@@ -103,7 +143,7 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
           <div style={{ animation: 'pulse 1.2s infinite', fontSize: 16 }}>加载中...</div>
         </div>
       ) : profiles.length === 0 ? (
-        <Empty text="暂无待审核资料 🎉" />
+        <Empty text={`暂无${FILTER_TABS.find(t => t.key === filter)?.label.slice(2) || ''}资料`} />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {profiles.map((p, i) => (
@@ -283,7 +323,7 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
               </div>
             )}
 
-            {/* Action Buttons */}
+            {/* Action Buttons - 只有 pending 状态才显示审核按钮 */}
             {detail.status === 'pending' && (
               <div style={{
                 display: 'flex', gap: 12, marginTop: 24,
@@ -301,6 +341,16 @@ export function ProfilesPage({ showToast }: ProfilesPageProps) {
                   onClick={() => handleApprove(detail.id)}
                   loading={actionLoading === 'approve'}
                 >✓ 通过</Button>
+              </div>
+            )}
+
+            {/* 非 pending 状态也可以预览文案 */}
+            {detail.status !== 'pending' && (
+              <div style={{
+                display: 'flex', gap: 12, marginTop: 24,
+                paddingTop: 20, borderTop: `1px solid ${COLORS.border}`,
+              }}>
+                <Button variant="ghost" onClick={() => openPost(detail.id)}>👁 预览文案</Button>
               </div>
             )}
           </div>
