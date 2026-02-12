@@ -8,6 +8,7 @@ import { ProfilesPage } from './pages/ProfilesPage'
 import { InvitationsPage } from './pages/InvitationsPage'
 import { api } from './api'
 import type { PageKey, DashboardStats, ToastInfo, ToastType } from './types'
+import { NetworkPage } from './pages/NetworkPage'
 
 // 启动时从 localStorage 恢复 token
 const savedToken = localStorage.getItem('admin_token')
@@ -85,6 +86,9 @@ export default function App() {
         )}
         {page === 'invitations' && (
           <InvitationsPage showToast={showToast} />
+        )}
+        {page === 'network' && (
+            <NetworkPage showToast={showToast} />
         )}
       </div>
 

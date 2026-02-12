@@ -117,6 +117,16 @@ class ApiClient {
   async getProfilesByStatus(status: string, page = 1, limit = 20): Promise<ApiResponse<PendingListData>> {
     return this.request(`/admin/profiles/list?status=${status}&page=${page}&limit=${limit}`)
   }
+
+  // ========== 邀请关系网络 ==========
+
+  async getNetworkTree(): Promise<ApiResponse> {
+    return this.request('/admin/network/tree')
+  }
+
+  async getNetworkUserDetail(userId: number): Promise<ApiResponse> {
+    return this.request(`/admin/network/user/${userId}`)
+  }
 }
 
 // 导出单例
