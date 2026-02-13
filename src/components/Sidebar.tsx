@@ -30,9 +30,9 @@ export function Sidebar({ active, onNav, onLogout }: SidebarProps) {
             background: COLORS.gradient, display: 'flex', alignItems: 'center',
             justifyContent: 'center', fontSize: 20,
             backgroundSize: '200% 200%', animation: 'gradientShift 4s ease infinite',
-          }}>🌈</div>
+          }}>📋</div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.text }}>彩虹注册</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.text }}>信息登记</div>
             <div style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 500 }}>管理后台</div>
           </div>
         </div>
@@ -50,41 +50,37 @@ export function Sidebar({ active, onNav, onLogout }: SidebarProps) {
               cursor: 'pointer', fontSize: 14,
               fontWeight: active === it.key ? 600 : 400,
               color: active === it.key ? COLORS.text : COLORS.textSec,
-              background: active === it.key ? COLORS.accentDim : 'transparent',
-              transition: 'all 0.2s',
+              background: active === it.key ? `${COLORS.primary}10` : 'transparent',
+              transition: 'all 0.15s',
             }}
             onMouseEnter={e => {
-              if (active !== it.key) e.currentTarget.style.background = COLORS.surfaceHover
+              if (active !== it.key) (e.currentTarget as HTMLElement).style.background = '#f8f8f8'
             }}
             onMouseLeave={e => {
-              if (active !== it.key) e.currentTarget.style.background = 'transparent'
+              if (active !== it.key) (e.currentTarget as HTMLElement).style.background = 'transparent'
             }}
           >
-            <span style={{ fontSize: 16 }}>{it.emoji}</span>
-            {it.label}
+            <span style={{ fontSize: 18 }}>{it.emoji}</span>
+            <span>{it.label}</span>
           </div>
         ))}
       </div>
 
-      {/* Logout */}
+      {/* Bottom */}
       <div style={{ padding: '16px 12px', borderTop: `1px solid ${COLORS.border}` }}>
         <div
           onClick={onLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 14px', borderRadius: 10, cursor: 'pointer',
-            fontSize: 13, color: COLORS.textMuted, transition: 'all 0.2s',
+            padding: '12px 14px', borderRadius: 10,
+            cursor: 'pointer', fontSize: 14, color: COLORS.textMuted,
+            transition: 'all 0.15s',
           }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = COLORS.dangerDim
-            e.currentTarget.style.color = COLORS.danger
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.color = COLORS.textMuted
-          }}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#fff0f0'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
         >
-          🚪 退出登录
+          <span style={{ fontSize: 18 }}>👋</span>
+          <span>退出登录</span>
         </div>
       </div>
     </div>
